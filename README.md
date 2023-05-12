@@ -1,7 +1,7 @@
 Simple flask API
 
 ## Installation
-In order to install this repo you have to do the folllowing:
+In order to install this repo you have to do the following:
 ```
 python3 -m venv venv
 source venv/bin/activate
