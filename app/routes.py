@@ -1,9 +1,6 @@
 from app import app
 from app.forms import LoginForm
-from flask import render_template, flash, redirect, jsonify, url_for
-from flask_login import current_user, login_user
-from app.models import User
-from flask_login import logout_user
+from flask import render_template, flash, redirect
 
 
 @app.route('/')
@@ -22,16 +19,11 @@ def index():
         }
     ]
     return render_template('index.html',title=title, user=user, posts=posts)
-    # return jsonify({
-    #     "title": title,
-    #     "username": user['username'],
-    #     "posts": posts
-    # }), 200
+
 
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
-   
 
 
 @app.route('/login', methods=['GET', 'POST'])

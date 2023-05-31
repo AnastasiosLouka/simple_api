@@ -9,14 +9,12 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+
 class BaseModel(db.Model):
-    # This means that it will be an abstract model. It has to do with the database
     class Meta:
         abstract = True
-    # this id will be used from every class which inherits the base model
-    id = db.Column(db.Integer, primary_key=True)
 
-#Make your other models inherit base model
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class User(UserMixin,BaseModel):
@@ -24,7 +22,6 @@ class User(UserMixin,BaseModel):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -34,6 +31,7 @@ class User(UserMixin,BaseModel):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
     
 class Post(BaseModel):
     body = db.Column(db.String(140))
