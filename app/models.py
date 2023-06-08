@@ -16,6 +16,13 @@ class BaseModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def save(self):
+        db.session.delete()
+
 
 class User(UserMixin,BaseModel):
     username = db.Column(db.String(64), index=True, unique=True)
