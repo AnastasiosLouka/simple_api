@@ -1,6 +1,13 @@
 from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import login
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 
 class BaseModel(db.Model):
     # This means that it will be an abstract model. It has to do with the database
@@ -12,7 +19,7 @@ class BaseModel(db.Model):
 #Make your other models inherit base model
 
 
-class User(BaseModel):
+class User(UserMixin,BaseModel):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
