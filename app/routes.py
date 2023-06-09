@@ -1,17 +1,12 @@
 from app import app
-from app.forms import LoginForm
-from flask import render_template, flash, redirect, jsonify, url_for
-from flask_login import current_user, login_user
+from flask import jsonify, request
+
 from app.models import User
-from flask_login import logout_user
 
 
-@app.route('/')
-@app.route('/index')
-def index():
-    title='Home'
-    user = {'username': 'Miguel'}
-    posts = [
+@app.route('/post')
+def manage_post():
+    return jsonify([
         {
             'author': {'username': 'John'},
             'body': 'Beautiful day in Portland!'
@@ -20,35 +15,59 @@ def index():
             'author': {'username': 'Susan'},
             'body': 'The Avengers movie was so cool!'
         }
-    ]
-    return render_template('index.html',title=title, user=user, posts=posts)
-    # return jsonify({
-    #     "title": title,
-    #     "username": user['username'],
-    #     "posts": posts
-    # }), 200
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
-   
+    ]), 200
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
+# Create, Update, Get, Delete one user from db
+@app.route('/user/<user_id>', methods=['POST', 'GET', 'PUT', 'DELETE'])
+def manage_user(user_id):
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        username = data["username"]
+        password = data["password"]
+        user = User(username=username, password=password)
+        user.save()
+        return jsonify({"title": "User saved", "msg": "User saved to db"}), 201
 
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
+    elif request.method == "PUT":
+        data = request.get_json(force=True)
+        username = data["username"]
+        password = data["password"]
+        user = User.query.first(user_id)
+        user.username = username
+        user.password = password
+        user.save()
+        return jsonify({"title": "User updated", "msg": "User updated to db"}), 200
+
+    elif request.method == "DELETE":
+        user = User.query.first(user_id)
+        user.delete()
+        return jsonify({"title": "User deleted", "msg": "User deleted from db"}), 204
+
+    else: # request.method == "GET"
+        user = User.query.first(user_id)
+        return jsonify({
+            "username": user.username,
+            "password": user.password
+        }), 200
+
+
+# Get all user from db
+@app.route('/users', methods=['GET'])
+def manage_users():
+    users = User.get.all()
+    return jsonify({'name': user.username for user in users}), 200
+
+
+@app.route('/login', methods=['POST'])
+def login(request):
+    data = request.get_json(force=True)
+    users = User.query.all()
+    for user in users:
+        if (
+            user.username == data["username"]
+            and user.password == data["password"]
+        ):
+            return jsonify({"title": "user logged in", "msg": "user logged in logged in successfully"}), 200
+    # no user found with correct credentials
+    return jsonify({"title": "invalid login", "msg": "invalid username or password"}), 400
