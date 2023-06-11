@@ -11,10 +11,10 @@ def load_user(id):
 
 
 class BaseModel(db.Model):
-    class Meta:
-        abstract = True
+    __abstract__= True
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,), 
+
 
     def save(self):
         db.session.add(self)
