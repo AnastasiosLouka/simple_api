@@ -21,7 +21,7 @@ class BaseModel(db.Model):
 
     def delete(self):
         db.session.delete(self)
-
+        db.session.commit()
 
 class User(UserMixin, BaseModel):
     username = db.Column(db.String(64), index=True, unique=True)

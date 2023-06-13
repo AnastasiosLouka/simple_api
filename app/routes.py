@@ -59,8 +59,7 @@ def manage_user(user_id):
 @app.route('/users', methods=['GET'])
 def manage_users():
     users = User.query.all()
-    return jsonify({'name': user.username for user in users}), 200
-
+    return jsonify([{'name': user.username, "id": user.id} for user in users]), 200
 
 @app.route('/login', methods=['POST'])
 def login(request):
