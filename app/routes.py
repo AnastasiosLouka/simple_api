@@ -19,43 +19,46 @@ def manage_post():
 
 
 # Create, Update, Get, Delete one user from db
-@app.route('/user/<user_id>', methods=['POST', 'GET', 'PUT', 'DELETE'])
-def manage_user(user_id):
-    if request.method == "POST":
-        data = request.get_json(force=True)
-        username = data["username"]
-        password = data["password"]
-        user = User(username=username, password=password)
-        user.save()
-        return jsonify({"title": "User saved", "msg": "User saved to db"}), 201
+@app.route('/user', methods=['POST'])
+def add_user():
+    data = request.get_json(force=True)
+    username = data["username"]
+    password = data["password"]
+    user = User(username=username)
+    user.set_password(password)
+    user.save()
+    return jsonify({"title": "User saved", "msg": "User saved to db"}), 201
 
-    elif request.method == "PUT":
+
+@app.route('/user/<user_id>', methods=['GET', 'PUT', 'DELETE'])
+def manage_user(user_id):
+    if request.method == "PUT":
         data = request.get_json(force=True)
         username = data["username"]
         password = data["password"]
-        user = User.query.first(user_id)
+        user = User.query.get(user_id)
         user.username = username
         user.password = password
         user.save()
         return jsonify({"title": "User updated", "msg": "User updated to db"}), 200
 
     elif request.method == "DELETE":
-        user = User.query.first(user_id)
+        user = User.query.get(user_id)
         user.delete()
         return jsonify({"title": "User deleted", "msg": "User deleted from db"}), 204
 
     else: # request.method == "GET"
-        user = User.query.first(user_id)
+        user = User.query.get(user_id)
         return jsonify({
             "username": user.username,
-            "password": user.password
+            "password": user.password_hash
         }), 200
 
 
 # Get all user from db
 @app.route('/users', methods=['GET'])
 def manage_users():
-    users = User.get.all()
+    users = User.query.all()
     return jsonify({'name': user.username for user in users}), 200
 
 

@@ -20,10 +20,10 @@ class BaseModel(db.Model):
         db.session.commit()
 
     def delete(self):
-        db.session.delete()
+        db.session.delete(self)
 
 
-class User(UserMixin,BaseModel):
+class User(UserMixin, BaseModel):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
