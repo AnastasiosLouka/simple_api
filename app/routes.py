@@ -1,21 +1,18 @@
 from app import app
 from flask import jsonify, request
+from app.models import User, Post
 
-from app.models import User
+# Create, Update, Get, Delete one post from db
 
+@app.route('/post/<post_id>', methods =['GET'])
+def manage_post(post_id):
+    post = Post.query.get(post_id)
+    return jsonify({ 
+     'body':post.body , 
+     'timestamp':post.timestamp,
+     'user_id':post.user_id
+    }), 200
 
-@app.route('/post')
-def manage_post():
-    return jsonify([
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]), 200
 
 
 # Create, Update, Get, Delete one user from db
