@@ -45,7 +45,6 @@ def manage_user(user_id):
 
     else: # request.method == "GET"
         user = User.query.get(user_id)
-        import pdb;pdb.set_trace()
         return jsonify({
             "username": user.username,
             "password": user.password_hash
