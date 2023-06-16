@@ -2,8 +2,8 @@ from app import app
 from flask import jsonify, request
 from app.models import User, Post
 
-# Create, Update, Get, Delete one post from db
 
+# Create, Update, Get, Delete one post from db
 @app.route('/post/<post_id>', methods =['GET'])
 def manage_post(post_id):
     post = Post.query.get(post_id)
@@ -12,7 +12,6 @@ def manage_post(post_id):
      'timestamp':post.timestamp,
      'user_id':post.user_id
     }), 200
-
 
 
 # Create, Update, Get, Delete one user from db
@@ -46,6 +45,7 @@ def manage_user(user_id):
 
     else: # request.method == "GET"
         user = User.query.get(user_id)
+        import pdb;pdb.set_trace()
         return jsonify({
             "username": user.username,
             "password": user.password_hash
@@ -57,6 +57,7 @@ def manage_user(user_id):
 def manage_users():
     users = User.query.all()
     return jsonify([{'name': user.username, "id": user.id} for user in users]), 200
+
 
 @app.route('/login', methods=['POST'])
 def login(request):
