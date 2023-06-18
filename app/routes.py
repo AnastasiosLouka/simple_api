@@ -6,13 +6,35 @@ from app.models import User, Post
 
 @app.route('/post/<post_id>', methods =['GET'])
 def manage_post(post_id):
-    post = Post.query.get(post_id)
-    return jsonify({ 
-     'body':post.body , 
-     'timestamp':post.timestamp,
-     'user_id':post.user_id
-    }), 200
+    if request.method == 'GET':
+        post = Post.query.get(post_id)
+        return jsonify({ 
+        'body':post.body , 
+        'timestamp':post.timestamp,
+        'user_id':post.user_id
+        }), 200
+    
+    elif request.method == 'PUT':
+        data = request.get_json(force=True)
+        body = data["body"]
+        post = Post.query.get(post_id)
+        post.body = body
+        return jsonify({"title": "Post updated", "msg": "Post updated to db"}), 200
 
+    else: #if request.mehod == 'DELETE'
+        post = Post.query.get(post_id)
+        post.delete()
+        return jsonify({"title": "Post deleted", "msg": "Post deleted from db"}), 204
+    
+
+@app.route('/post', methods =['POST'])
+def add_post():
+    data = request.get_json(force=True)
+    body = data["body" ]
+    user_id = data["user_id"]
+    post=Post(body=body, user_id=user_id)
+    post.save()
+    return jsonify({"title":"Post saved"}),201
 
 
 # Create, Update, Get, Delete one user from db
