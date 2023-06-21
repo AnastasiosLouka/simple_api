@@ -44,12 +44,12 @@ def add_post():
     data = request.get_json(force=True)
     body = data["body"]
     user_id = data["user_id"] 
-    post = Post(body=body, user_id=user_id)
     if body == None:
         return jsonify({"msg": "body is required"}), 400 #1
-    elif "user_id" not in user_id:
+    elif user_id == None:
         return jsonify({"msg":"user_id required"}), 400  #2
     else:
+        post = Post(body=body, user_id=user_id)
         post.save()
     return jsonify({"title":"Post saved"}),201
 
