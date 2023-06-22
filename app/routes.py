@@ -10,7 +10,7 @@ def manage_post(post_id):
         post = Post.query.get(post_id)
         if post == None :
             return jsonify({"msg": "there is no post"}), 400
-        
+    
         else :
             return jsonify({ 
             'body':post.body , 
@@ -42,8 +42,8 @@ def manage_post(post_id):
 @app.route('/post', methods =['POST'])
 def add_post():
     data = request.get_json(force=True)
-    body = data["body"]
-    user_id = data["user_id"] 
+    body = data.get("body")
+    user_id = data.get("user_id")
     if body == None:
         return jsonify({"msg": "body is required"}), 400 #1
     elif user_id == None:
@@ -81,10 +81,10 @@ def add_user():
 def manage_user(user_id):
     if request.method == "PUT":
         data = request.get_json(force=True)
-        username = data["username"]
+        username = data.get("username")
         if username == None:
             return jsonify({"msg":"username is required"})#3
-        password = data["password"]
+        password = data.get("password")
         if password == None:
             return jsonify({"msg":"password is required"})#4
         user = User.query.get(user_id)
