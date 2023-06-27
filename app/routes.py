@@ -6,9 +6,9 @@ from app.models import User, Post
 # Create, Update, Get, Delete one post from db
 @app.route('/post/<post_id>', methods =['GET', 'PUT', 'DELETE'])
 def manage_post(post_id):
-    if request.mehod == 'DELETE':
+    if request.method == 'DELETE':
         post = Post.query.get(post_id)
-        if post == None:
+        if post is None:
             return jsonify({"msg":"No post deleted"}), 400
         post.delete()
         return jsonify({"title": "Post deleted", "msg": "Post deleted from db"}), 204
