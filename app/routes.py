@@ -56,7 +56,6 @@ def manage_posts():
     posts = Post.query.all()
     return jsonify([{"body":post.body, "user_id":post.user_id, "id": post.id} for post in posts]), 200
 
-
 # Create, Update, Get, Delete one user from db
 @app.route('/user', methods=['POST'])
 def add_user():
@@ -107,4 +106,3 @@ def manage_user(user_id):
 def manage_users():
     users = User.query.all()
     return jsonify([{'name': user.username, "id": user.id} for user in users]), 200
-
