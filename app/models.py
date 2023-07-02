@@ -23,6 +23,14 @@ class BaseModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    @classmethod
+    def get_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
+    
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
+
 class User(UserMixin, BaseModel):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
