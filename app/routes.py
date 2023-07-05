@@ -41,21 +41,19 @@ def manage_post(post_id):
             return jsonify({"title": "save failed", "msg": str(error)}), 400
 
     else:
-        if request.method == "GET":
-            post = Post.get_by_id(post_id)
+        post = Post.get_by_id(post_id)
         if post is None:
             return jsonify({"title": "There is no post", "msg": "No post found"}), 400
-        else:
-            return (
-                jsonify(
-                    {
-                        "body": post.body,
-                        "timestamp": post.timestamp,
-                        "user_id": post.user_id,
-                    }
-                ),
-                200,
-            )
+        return (
+            jsonify(
+                {
+                    "body": post.body,
+                    "timestamp": post.timestamp,
+                    "user_id": post.user_id,
+                }
+            ),
+            200,
+        )
 
 
 @app.route("/post", methods=["POST"])
@@ -135,6 +133,8 @@ def manage_user(user_id):
                 {"title": "Save failed", "msg": "username and password are required"}
             )
         user = User.get_by_id(user_id)
+        if not user:
+            return jsonify({"title": "Save failed", "msg": "There is no user"}), 400
         user.username = username
         user.set_password(password)
         try:
