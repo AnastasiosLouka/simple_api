@@ -9,7 +9,6 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-
 class BaseModel(db.Model):
     __abstract__= True
 
