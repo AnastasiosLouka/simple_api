@@ -98,6 +98,7 @@ def manage_posts():
         200,
     )
 
+
 # Create, Update, Get, Delete one user from db
 @app.route("/user", methods=["POST"])
 def add_user():
