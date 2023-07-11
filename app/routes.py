@@ -75,6 +75,7 @@ def manage_posts():
     posts = Post.get_all()
     return jsonify(Post.__schema__(many=True).dump(posts)), 200
 
+
 # Create, Update, Get, Delete one user from db
 @app.route("/user", methods=["POST"])
 def add_user():
