@@ -172,6 +172,7 @@ def manage_user(user_id):
                     "posts": [
                         {
                             "body": post.body,
+                            "post_id": post.id,
                             "user_id": post.user_id,
                             "time": post.timestamp,
                         }
@@ -197,6 +198,7 @@ def manage_users():
                     "posts": [
                         {
                             "body": post.body,
+                            "post_id": post.id,
                             "user_id": post.user_id,
                             "time": post.timestamp,
                         }
