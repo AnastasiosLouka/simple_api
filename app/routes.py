@@ -134,8 +134,14 @@ def manage_user(user_id):
         username = data.get("username")
         password = data.get("password")
         if not username or not password:
-            return jsonify(
-                {"title": "Save failed", "msg": "username and password are required"}
+            return (
+                jsonify(
+                    {
+                        "title": "Save failed",
+                        "msg": "username and password are required",
+                    }
+                ),
+                400,
             )
         user = User.get_by_id(user_id)
         if not user:
