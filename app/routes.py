@@ -50,6 +50,7 @@ def manage_post(post_id):
                     "body": post.body,
                     "timestamp": post.timestamp,
                     "user_id": post.user_id,
+                    "id": post.id,
                 }
             ),
             200,
@@ -85,7 +86,12 @@ def manage_posts():
     return (
         jsonify(
             [
-                {"body": post.body, "user_id": post.user_id, "id": post.id}
+                {
+                    "body": post.body,
+                    "user_id": post.user_id,
+                    "id": post.id,
+                    "time": post.timestamp,
+                }
                 for post in posts
             ]
         ),
@@ -128,8 +134,14 @@ def manage_user(user_id):
         username = data.get("username")
         password = data.get("password")
         if not username or not password:
-            return jsonify(
-                {"title": "Save failed", "msg": "username and password are required"}
+            return (
+                jsonify(
+                    {
+                        "title": "Save failed",
+                        "msg": "username and password are required",
+                    }
+                ),
+                400,
             )
         user = User.get_by_id(user_id)
         if not user:
@@ -152,13 +164,54 @@ def manage_user(user_id):
 
     else:  # request.method == "GET"
         user = User.get_by_id(user_id)
+
         if user is None:
             return jsonify({"title": "There in no user", "msg": "user not found"}), 400
-        return jsonify({"username": user.username, "password": user.password_hash}), 200
+
+        return (
+            jsonify(
+                {
+                    "name": user.username,
+                    "id": user.id,
+                    "password": user.password_hash,
+                    "posts": [
+                        {
+                            "body": post.body,
+                            "post_id": post.id,
+                            "user_id": post.user_id,
+                            "time": post.timestamp,
+                        }
+                        for post in user.posts
+                    ],
+                }
+            ),
+            200,
+        )
 
 
 # Get all user from db
 @app.route("/users", methods=["GET"])
 def manage_users():
     users = User.get_all()
-    return jsonify([{"name": user.username, "id": user.id} for user in users]), 200
+    return (
+        jsonify(
+            [
+                {
+                    "name": user.username,
+                    "id": user.id,
+                    "password": user.password_hash,
+                    "posts": [
+                        {
+                            "body": post.body,
+                            "post_id": post.id,
+                            "user_id": post.user_id,
+                            "time": post.timestamp,
+                        }
+                        for post in user.posts
+                    ],
+                }
+                for user in users
+            ]
+        ),
+        200,
+    )
