@@ -44,17 +44,7 @@ def manage_post(post_id):
         post = Post.get_by_id(post_id)
         if post is None:
             return jsonify({"title": "There is no post", "msg": "No post found"}), 400
-        return (
-            jsonify(
-                {
-                    "body": post.body,
-                    "timestamp": post.timestamp,
-                    "user_id": post.user_id,
-                    "id": post.id,
-                }
-            ),
-            200,
-        )
+        return jsonify(Post.__schema__.dump(post)), 200
 
 
 @app.route("/post", methods=["POST"])
