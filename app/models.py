@@ -2,13 +2,7 @@ from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app import login
-from schemas import PostSchema, UserSchema
-
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+from app.schemas import PostSchema, UserSchema
 
 
 class BaseModel(db.Model):
@@ -37,7 +31,7 @@ class BaseModel(db.Model):
 
 
 class User(UserMixin, BaseModel):
-    __schema__ = UserSchema()
+    __schema__ = UserSchema
 
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -55,7 +49,7 @@ class User(UserMixin, BaseModel):
 
 
 class Post(BaseModel):
-    __schema__ = PostSchema()
+    __schema__ = PostSchema
 
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
