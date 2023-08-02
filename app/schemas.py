@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields
 
-
 class PostSchema(Schema):
     body = fields.Str()
     user_id = fields.Integer()
@@ -8,6 +7,7 @@ class PostSchema(Schema):
 
 
 class UserSchema(Schema):
+    id = fields.Integer()
     username = fields.Str()
     email = fields.Email()
-    posts = fields.Str
+    posts = fields.Nested(PostSchema(many=True))
