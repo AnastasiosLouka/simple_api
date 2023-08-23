@@ -44,17 +44,7 @@ def manage_post(post_id):
         post = Post.get_by_id(post_id)
         if post is None:
             return jsonify({"title": "There is no post", "msg": "No post found"}), 400
-        return (
-            jsonify(
-                {
-                    "body": post.body,
-                    "timestamp": post.timestamp,
-                    "user_id": post.user_id,
-                    "id": post.id,
-                }
-            ),
-            200,
-        )
+        return jsonify(Post.__schema__().dump(post)), 200
 
 
 @app.route("/post", methods=["POST"])
@@ -83,20 +73,7 @@ def add_post():
 @app.route("/posts", methods=["GET"])
 def manage_posts():
     posts = Post.get_all()
-    return (
-        jsonify(
-            [
-                {
-                    "body": post.body,
-                    "user_id": post.user_id,
-                    "id": post.id,
-                    "time": post.timestamp,
-                }
-                for post in posts
-            ]
-        ),
-        200,
-    )
+    return jsonify(Post.__schema__(many=True).dump(posts)), 200
 
 # Create, Update, Get, Delete one user from db
 @app.route("/user", methods=["POST"])
@@ -168,50 +145,11 @@ def manage_user(user_id):
         if user is None:
             return jsonify({"title": "There in no user", "msg": "user not found"}), 400
 
-        return (
-            jsonify(
-                {
-                    "name": user.username,
-                    "id": user.id,
-                    "password": user.password_hash,
-                    "posts": [
-                        {
-                            "body": post.body,
-                            "post_id": post.id,
-                            "user_id": post.user_id,
-                            "time": post.timestamp,
-                        }
-                        for post in user.posts
-                    ],
-                }
-            ),
-            200,
-        )
+        return jsonify(User.__schema__().dump(user)), 200
 
 
 # Get all user from db
 @app.route("/users", methods=["GET"])
 def manage_users():
     users = User.get_all()
-    return (
-        jsonify(
-            [
-                {
-                    "name": user.username,
-                    "id": user.id,
-                    "password": user.password_hash,
-                    "posts": [
-                        {
-                            "body": post.body,
-                            "post_id": post.id,
-                            "user_id": post.user_id,
-                            "time": post.timestamp,
-                        }
-                        for post in user.posts
-                    ],
-                }
-                for user in users
-            ]
-        ),
-        200,
-    )
+    return jsonify(User.__schema__(many=True).dump(users)), 200
