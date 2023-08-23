@@ -1,6 +1,6 @@
 from app import app, db
 from flask import jsonify, request
-from app.models import User, Post
+from app.models import User, Post, Comment
 
 
 # Create, Update, Get, Delete one post from db
