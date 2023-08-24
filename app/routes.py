@@ -154,3 +154,98 @@ def manage_user(user_id):
 def manage_users():
     users = User.get_all()
     return jsonify(User.__schema__(many=True).dump(users)), 200
+
+
+# Create,Update,Get,Delete a comment from db
+@app.route("/comment/<comment_id>", methods=["GET", "PUT", "DELETE"])
+def manage_comment(comment_id):
+    if request.method == "DELETE":
+        comment = Comment.get_by_id(comment_id)
+        if comment is None:
+            return (
+                jsonify({"title": "There is no comment", "msg": "No comment deleted"}),
+                400,
+            )
+        comment.delete()
+        return (
+            jsonify({"title": "Comment deleted", "msg": "Comment deleted from db"}),
+            204,
+        )
+    elif request.method == "PUT":
+        try:
+            data = request.get_json(force=True)
+        except Exception as error:
+            return jsonify({"title": "request failed", "msg": str(error)}), 400
+        body = data.get("body")
+        if body is None:
+            return (
+                jsonify({"title": "There is no body", "msg": "body is required"}),
+                400,
+            )
+        comment = Comment.get_by_id(comment_id)
+        if comment is None:
+            return (
+                jsonify(
+                    {
+                        "title": "There is no comment",
+                        "msg": "Comment could not updated to db",
+                    }
+                ),
+                400,
+            )
+        comment.body = body
+        try:
+            comment.save()
+            return (
+                jsonify({"title": "Comment updated", "msg": "Comment updated to db"}),
+                200,
+            )
+        except Exception as error:
+            db.session.rollback()
+            return jsonify({"title": "save failed", "msg": str(error)}), 400
+    else:
+        comment = Comment.get_by_id(comment_id)
+        if comment is None:
+            return (
+                jsonify({"title": "There is no comment", "msg": "No comment found"}),
+                400,
+            )
+        return jsonify(Comment.__schema__().dump(comment)), 200
+
+
+@app.route("/comment/<comment_id>", methods=["POST"])
+def add_comment():
+    try:
+        data = request.get_json(force=True)
+    except Exception as error:
+        return jsonify({"title": "request failed", "msg": str(error)}), 400
+    body = data.get("body")
+    user_id = data.get("user_id")
+    post_id = data.get("post_id")
+    if not body or not post_id or not user_id:
+        return (
+            jsonify(
+                {
+                    "title": "Comment failed",
+                    "msg": "body,user_id and post_id are required",
+                }
+            ),
+            400,
+        )
+    comment = Comment(body=body, user_id=user_id, post_id=post_id)
+    try:
+        comment.save()
+        return (
+            jsonify({"title": "Comment saved", "msg": "Comment saved to database"}),
+            200,
+        )
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"title": "save failed", "msg": str(error)}), 400
+
+
+# Get all comments from db
+@app.route("/comments", methods=["GET"])
+def manage_comments():
+    comments = Comment.get_all()
+    return jsonify(Comment.__schema__(many=True).dump(comments)), 200
