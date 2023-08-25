@@ -213,7 +213,7 @@ def manage_comment(comment_id):
         return jsonify(Comment.__schema__().dump(comment)), 200
 
 
-@app.route("/comment/<comment_id>", methods=["POST"])
+@app.route("/comment", methods=["POST"])
 def add_comment():
     try:
         data = request.get_json(force=True)
