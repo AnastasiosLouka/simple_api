@@ -2,7 +2,7 @@ from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app.schemas import PostSchema, UserSchema
+from app.schemas import PostSchema, UserSchema, CommentSchema
 
 
 class BaseModel(db.Model):
@@ -37,6 +37,7 @@ class User(UserMixin, BaseModel):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship("Post", backref="author", lazy="dynamic")
+    comments = db.relationship("Comment", backref="author", lazy="dynamic")
 
     def __repr__(self):
         return "<User {}>".format(self.username)
@@ -54,6 +55,19 @@ class Post(BaseModel):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    comments = db.relationship("Comment", backref="post", lazy="dynamic")
 
     def __repr__(self):
         return "<Post {}>".format(self.body)
+
+
+class Comment(BaseModel):
+    __schema__ = CommentSchema
+
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+
+    def __repr__(self):
+        return "<Comment {}>".format(self.body)
