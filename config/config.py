@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
-    JWT_SECRET_KEY = os.environ.get("super")
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL"
