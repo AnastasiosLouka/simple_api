@@ -1,7 +1,7 @@
 FROM python:3
-WORKDIR /simple_api
-COPY /requirements.txt /simple_api
+WORKDIR /app
+COPY /requirements.txt /app
 RUN pip install -r requirements.txt
-COPY . /simple_api
+COPY . /app
 EXPOSE 5000
-CMD ["python", "/.simple_api"]
+CMD ["flask", "run"]
