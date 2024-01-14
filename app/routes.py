@@ -82,7 +82,7 @@ def manage_posts():
 
 # Create, Update, Get, Delete one user from db
 @app.route("/user", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def add_user():
     try:
         data = request.get_json(force=True)
